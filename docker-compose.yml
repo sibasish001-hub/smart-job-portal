@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: jobportal-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: jobportal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - jobportal-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: jobportal-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - jobportal-network
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: jobportal-mailhog
+    ports:
+      - "1025:1025" # SMTP port
+      - "8025:8025" # Web UI port
+    networks:
+      - jobportal-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  jobportal-network:
+    driver: bridge
